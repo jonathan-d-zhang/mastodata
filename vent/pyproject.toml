@@ -1,0 +1,14 @@
+[project]
+name = ""
+version = ""
+description = ""
+authors = [
+    {name = "jonathan-d-zhang", email = "69145546+jonathan-d-zhang@users.noreply.github.com"},
+]
+dependencies = [
+    "Mastodon-py>=1.8.1",
+]
+requires-python = ">=3.11"
+readme = "README.md"
+license = {text = "MIT"}
+
