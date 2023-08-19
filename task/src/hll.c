@@ -24,9 +24,29 @@ int find_msb(size_t x)
     return c;
 }
 
+long double alpha_m(size_t m)
+{
+    switch (m) {
+        case 2:
+            return 0.35119395;
+        case 4:
+            return 0.53243461;
+        case 8:
+            return 0.62560871;
+        case 16:
+            return 0.67310202;
+        case 32:
+            return 0.69712263;
+        case 64:
+            return 0.70920845;
+        default:
+            return 0.7213 / (1 + (1.079 / m));
+    }
+}
+
 hll hll_new(size_t size)
 {
-    size_t *arr = malloc(size * sizeof(size_t));
+    size_t *arr = calloc(size, sizeof(size_t));
     hll sketch = {
         arr,
         size,
@@ -56,6 +76,18 @@ void hll_add(hll *sketch, long long id)
 
     // update sketch
     sketch->arr[i] = max(sketch->arr[i], msb);
+}
+
+long double hll_count(hll *sketch)
+{
+    long double z = 0;
+    for (unsigned int i = 0; i < sketch->size; i++)
+    {
+        z += powl(2, -sketch->arr[i]);
+    }
+    z = powl(z, -1);
+
+    return alpha_m(sketch->size) * sketch->size * sketch->size * z;
 }
 
 size_t hll_hash(size_t size, long long id)
