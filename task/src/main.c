@@ -9,14 +9,19 @@
 #include "hll.h"
 
 int main() {
-    zsock_t *sub = zsock_new_sub("tcp://localhost:5556", "");
+    char *filter = getenv("SUB_FILTER");
+    char *proxy_address = getenv("PUB_ADDRESS");
+    if (NULL == filter)
+    {
+        filter = "";
+    }
+    zsock_t *sub = zsock_new_sub(proxy_address, filter);
+
     char *string;
-    long id;
 
     while (1) {
         string = zstr_recv(sub);
-        id = atoll(string);
-        printf("%ld\n", id);
+        printf("%s\n", string);
     }
 
     zstr_free(&string);
