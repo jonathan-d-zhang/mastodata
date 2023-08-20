@@ -11,6 +11,9 @@
 int main() {
     char *filter = getenv("SUB_FILTER");
     char *proxy_address = getenv("PUB_ADDRESS");
+
+    printf("Starting with filter=%s and proxy_address=%s\n", filter, proxy_address);
+
     if (NULL == filter)
     {
         filter = "";
