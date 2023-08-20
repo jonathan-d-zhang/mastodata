@@ -119,7 +119,7 @@ long long hll_count(hll *sketch)
         }
         else
         {
-            long double t = log2l((long double)sketch->size / v);
+            long double t = logl((long double)sketch->size / v);
             return roundl(sketch->size * t);
         }
     }
