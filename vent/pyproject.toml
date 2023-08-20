@@ -1,6 +1,6 @@
 [project]
-name = ""
-version = ""
+name = "mastodata-vent"
+version = "0.1.0"
 description = ""
 authors = [
     {name = "jonathan-d-zhang", email = "69145546+jonathan-d-zhang@users.noreply.github.com"},

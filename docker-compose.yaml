@@ -1,0 +1,19 @@
+version: "3.9"
+
+services:
+  vent:
+    build:
+      context: ./vent
+    restart: always
+    tty: true
+    environment:
+      PROXY_ADDRESS: "tcp://*:5559"
+
+  task:
+    build:
+      context: ./task
+    restart: always
+    tty: true
+    environment:
+      PROXY_ADDRESS: "tcp://vent:5559"
+      SUB_FILTER: ""
