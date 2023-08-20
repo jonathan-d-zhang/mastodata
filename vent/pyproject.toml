@@ -16,3 +16,10 @@ license = {text = "MIT"}
 
 [tool.pdm.scripts]
 start = "python src/vent/__main__.py"
+lint = "pre-commit"
+
+[tool.pdm.dev-dependencies]
+dev = [
+    "pre-commit>=3.3.3",
+    "black>=23.7.0",
+]

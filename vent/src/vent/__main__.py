@@ -1,13 +1,16 @@
+import datetime as dt
+import json
+import os
+
 import mastodon
 import zmq
-import json
-import datetime as dt
-import os
+
 
 class DateTimeEncoder(json.JSONEncoder):
     def default(self, o):
         if isinstance(o, dt.datetime):
             return o.isoformat()
+
 
 class QueueingListener(mastodon.StreamListener):
     def __init__(self):
@@ -16,7 +19,8 @@ class QueueingListener(mastodon.StreamListener):
     def on_update(self, status):
         pub.send_string(str(status["id"]))
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     ctx = zmq.Context()
     pub = ctx.socket(zmq.PUB)
     pub.bind(os.environ["PROXY_ADDRESS"])
