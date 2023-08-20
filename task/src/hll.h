@@ -3,7 +3,7 @@
 
 #include <stddef.h>
 
-typedef struct {
+typedef struct hll {
     size_t *arr;
 
     size_t size;

@@ -9,18 +9,35 @@
      __typeof__ (b) _b = (b); \
      _a > _b ? _a : _b; })
 
-// returns the first b bits of x
-size_t first_b_bits(size_t x, size_t b)
-{
-    return x >> (sizeof(size_t) * 8 - b);
-}
-
-int find_msb(size_t x)
+void binprint(size_t x)
 {
     int c = 0;
-    while (x >>= 1) {
+    printf("repr: '");
+    while (x) {
+        if (x & 1)
+            printf("1");
+        else
+            printf("0");
+        x >>= 1;
         c++;
     }
+    printf("' %d \n", c);
+}
+
+int count_run_of_zeros(size_t x)
+{
+    int c = 0;
+    if (x == 0)
+    {
+        return 0;
+    }
+
+    while ((x & 1) == 0)
+    {
+        x >>= 1;
+        c++;
+    }
+
     return c;
 }
 
@@ -66,16 +83,15 @@ void hll_add(hll *sketch, long long id)
 
     // get 1 + first b bits of x. this will be the index of the counter to
     // modify
-    size_t i = 1 + first_b_bits(x, sketch->b);
+    int mask = ((1 << sketch->b) - 1);
+    size_t i = (mask & x);
 
     // get the position of the leftmost 1, after removing the first b bits
-    //
-    size_t mask = (1UL << (sizeof(size_t) * 8 - sketch->b));
-    size_t rest = mask & x;
-    int msb = find_msb(rest);
+    size_t rest = x >> sketch->b;
+    int reg_val = count_run_of_zeros(rest) + 1;
 
     // update sketch
-    sketch->arr[i] = max(sketch->arr[i], msb);
+    sketch->arr[i] = max(sketch->arr[i], reg_val);
 }
 
 long double hll_count(hll *sketch)
@@ -87,10 +103,34 @@ long double hll_count(hll *sketch)
     }
     z = powl(z, -1);
 
-    return alpha_m(sketch->size) * sketch->size * sketch->size * z;
+    long double e = alpha_m(sketch->size) * sketch->size * sketch->size * z;
+    if (e < (5.0 / 2) * sketch->size) {
+        int v = 0;
+        for (unsigned int i = 0; i < sketch->size; i++)
+        {
+            if (sketch->arr[0] == 0)
+            {
+                v++;
+            }
+        }
+        if (v == 0)
+        {
+            return e;
+        }
+        else
+        {
+            long double t = log2l((long double)sketch->size / v);
+            printf("t:%Lf, v:%d\n", t, v);
+            return sketch->size * t;
+        }
+    }
+    else
+    {
+        return e;
+    }
 }
 
 size_t hll_hash(size_t size, long long id)
 {
-    return id % size;
+    return id;
 }
