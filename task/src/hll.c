@@ -63,7 +63,7 @@ long double alpha_m(size_t m)
 
 hll hll_new(size_t size)
 {
-    size_t *arr = calloc(size, sizeof(size_t));
+    long long *arr = calloc(size, sizeof(long long));
     hll sketch = {
         arr,
         size,
@@ -94,21 +94,21 @@ void hll_add(hll *sketch, long long id)
     sketch->arr[i] = max(sketch->arr[i], reg_val);
 }
 
-long double hll_count(hll *sketch)
+long long hll_count(hll *sketch)
 {
     long double z = 0;
     for (unsigned int i = 0; i < sketch->size; i++)
     {
-        z += powl(2, -sketch->arr[i]);
+        z += powl(2.0, -sketch->arr[i]);
     }
-    z = powl(z, -1);
+    z = 1.0 / z;
 
-    long double e = alpha_m(sketch->size) * sketch->size * sketch->size * z;
-    if (e < (5.0 / 2) * sketch->size) {
+    long double e = roundl(alpha_m(sketch->size) * sketch->size * sketch->size * z);
+    if (e < 2.5 * sketch->size) {
         int v = 0;
         for (unsigned int i = 0; i < sketch->size; i++)
         {
-            if (sketch->arr[0] == 0)
+            if (sketch->arr[i] == 0)
             {
                 v++;
             }
@@ -120,8 +120,7 @@ long double hll_count(hll *sketch)
         else
         {
             long double t = log2l((long double)sketch->size / v);
-            printf("t:%Lf, v:%d\n", t, v);
-            return sketch->size * t;
+            return roundl(sketch->size * t);
         }
     }
     else

@@ -4,7 +4,7 @@
 #include <stddef.h>
 
 typedef struct hll {
-    size_t *arr;
+    long long *arr;
 
     size_t size;
 
@@ -16,7 +16,7 @@ typedef struct hll {
 hll hll_new(size_t size);
 void hll_destroy(hll *sketch);
 void hll_add(hll *sketch, long long id);
-long double hll_count(hll *sketch);
+long long hll_count(hll *sketch);
 void hll_merge(hll *left, hll *right);
 size_t hll_hash(size_t size, long long id);
 
