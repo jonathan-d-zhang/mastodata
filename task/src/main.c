@@ -10,21 +10,24 @@
 
 int main() {
     char *filter = getenv("SUB_FILTER");
-    char *proxy_address = getenv("PROXY_ADDRESS");
+    char *vent_address = getenv("VENT_ADDRESS");
+    char *sink_address = getenv("SINK_ADDRESS");
 
-    printf("Starting with filter=%s and proxy_address=%s\n", filter, proxy_address);
+    printf("Starting with filter=%s and proxy_address=%s\n", filter, vent_address);
 
     if (NULL == filter)
     {
         filter = "";
     }
-    zsock_t *sub = zsock_new_sub(proxy_address, filter);
+    zsock_t *sub = zsock_new_sub(vent_address, filter);
+    zsock_t *push = zsock_new_push(sink_address);
 
     char *string;
 
     while (1) {
         string = zstr_recv(sub);
-        printf("%s\n", string);
+        //printf("%s\n", string);
+        zstr_send(push, string);
     }
 
     zstr_free(&string);

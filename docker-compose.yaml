@@ -7,13 +7,25 @@ services:
     restart: always
     tty: true
     environment:
-      PROXY_ADDRESS: "tcp://*:5559"
+      VENT_ADDRESS: "tcp://*:5559"
 
   task:
     build:
       context: ./task
     restart: always
     tty: true
+    depends_on:
+      - vent
+      - sink
     environment:
-      PROXY_ADDRESS: "tcp://vent:5559"
+      VENT_ADDRESS: "tcp://vent:5559"
+      SINK_ADDRESS: "tcp://sink:5559"
       SUB_FILTER: ""
+
+  sink:
+    build:
+      context: ./sink
+    restart: always
+    tty: true
+    environment:
+      SINK_ADDRESS: "tcp://*:5559"
