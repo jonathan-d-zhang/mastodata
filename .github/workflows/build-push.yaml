@@ -37,7 +37,7 @@ jobs:
           config-inline: |
             [worker.oci]
             gc = true
-            gckeepstorage = 10000  # 10 GB
+            gckeepstorage = 10_000  # 10 GB
 
             [[worker.oci.gcpolicy]]
             all = true
