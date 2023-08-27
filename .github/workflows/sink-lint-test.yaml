@@ -1,0 +1,72 @@
+name: Sink Lint and Test
+
+on:
+  push:
+  pull_request:
+
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+
+jobs:
+  fmt:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744  # 3.6.0
+
+      - name: Setup Rust
+        run: |
+          set -e
+          rustup toolchain install stable --no-self-update --profile minimal --component rustfmt
+          rustup default stable
+
+      - name: Run rustfmt
+        run: cargo fmt --all --check
+
+  clippy:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744  # 3.6.0
+
+      - name: Setup Rust
+        run: |
+          set -e
+          rustup toolchain install stable --no-self-update --profile minimal --component rustfmt
+          rustup default stable
+
+      - name: Cache deps
+        uses: Swatinem/rust-cache@e207df5d269b42b69c8bc5101da26f7d31feddb4  # 2.6.2
+        with:
+          key: x86-unknown-linux-gnu
+
+      - name: Run Clippy
+        run: cargo clippy -- -D clippy::all -D clippy::pedantic -D clippy::cargo
+
+  test:
+    runs-on: ${{ matrix.triple.runs-on }}
+    strategy:
+      matrix:
+        triple:
+          - runs-on: ubuntu-22.04
+            target: x86-unknown-linux-gnu
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744  # 3.6.0
+
+      - name: Setup Rust
+        run: |
+          set -e
+          rustup toolchain install stable --no-self-update --profile minimal --component rustfmt
+          rustup default stable
+
+      - name: Cache deps
+        uses: Swatinem/rust-cache@e207df5d269b42b69c8bc5101da26f7d31feddb4  # 2.6.2
+        with:
+          key: ${{ matrix.triple.runs-on }}
+
+      - name: Run tests
+        run: cargo test --no-fail-fast
