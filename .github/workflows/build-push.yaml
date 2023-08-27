@@ -68,7 +68,7 @@ jobs:
           builder: ${{ steps.buildx.outputs.name }}
           cache-from: type=gha,scope=${{ matrix.platform }}
           cache-to: type=gha,mode=max,scope=${{ matrix.platform }}
-          file: ${{ matrix.app }}/Dockerfile
+          context: ${{ matrix.app }}
           labels: ${{ steps.docker_meta.outputs.labels }}
           platforms: ${{ matrix.platform }}
           push: true
