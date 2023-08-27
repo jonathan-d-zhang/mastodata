@@ -23,8 +23,6 @@ COPY tests/ tests/
 # Prod
 FROM python:3.11-slim@sha256:4b2e5faf103be72abb65046501a89f8feaef28c1148fc2f9b3326e31694ee735 as prod
 
-# Define Git SHA build argument for sentry
-
 ENV PYTHONPATH=/app/pkgs
 WORKDIR /app
 COPY --from=builder /app/__pypackages__/3.11/lib pkgs/

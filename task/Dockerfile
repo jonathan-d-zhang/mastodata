@@ -24,34 +24,6 @@ EOT
 COPY src/ src/
 COPY Makefile Makefile
 
-# ====================================================================================================
-# Debug
-FROM base as build-debug
-
-RUN make
-
-# ==================================================
-FROM debian:${DEBIAN_VERSION}-slim AS debug
-
-WORKDIR /app
-
-RUN <<EOT
-#!/usr/bin/env bash
-set -eu
-
-apt -q update
-apt -qy --no-install-recommends install libczmq-dev libzmq3-dev
-rm -rf /var/lib/apt/lists/*
-EOT
-
-COPY --from=build-debug /app/build/${PROJECT} ./${PROJECT}
-
-ENTRYPOINT [ "./task" ]
-
-# ====================================================================================================
-# Release
-FROM base as build-release
-
 RUN make OPT_LEVEL='-O3 -flto'
 
 # ==================================================
@@ -68,6 +40,6 @@ apt -qy --no-install-recommends install libczmq-dev libzmq3-dev
 rm -rf /var/lib/apt/lists/*
 EOT
 
-COPY --from=build-debug /app/build/${PROJECT} ./${PROJECT}
+COPY --from=base /app/build/${PROJECT} ./${PROJECT}
 
 ENTRYPOINT [ "./task" ]
