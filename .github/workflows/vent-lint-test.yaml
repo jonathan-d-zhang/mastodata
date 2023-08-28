@@ -2,7 +2,9 @@ name: Vent Lint and Test
 
 on:
   push:
+    - "sink/**"
   pull_request:
+    - "sink/**"
 
 
 concurrency:

@@ -2,7 +2,11 @@ name: Sink Lint and Test
 
 on:
   push:
+    paths:
+      - "**.rs"
   pull_request:
+    paths:
+      - "**.rs"
 
 
 concurrency:
