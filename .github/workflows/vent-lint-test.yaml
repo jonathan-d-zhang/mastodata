@@ -6,11 +6,9 @@ on:
   pull_request:
     - "sink/**"
 
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
-
 
 jobs:
   vent:
@@ -26,11 +24,6 @@ jobs:
           cache: true
 
       - name: Install dependencies
-        run: |
-          cd vent
-          pdm install --dev
-
-      - name: Run pre-commit
         run: |
           cd vent
           pdm install --dev
