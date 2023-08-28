@@ -8,11 +8,9 @@ on:
     paths:
       - "**.rs"
 
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
-
 
 jobs:
   test:
@@ -25,6 +23,11 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744  # 3.6.0
+
+      - name: Install libzmq
+        run: |
+          apt -q update
+          apt -qy --no-install-recommends install libzmq3-dev
 
       - name: Setup Rust
         run: |
