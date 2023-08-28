@@ -24,8 +24,8 @@ jobs:
 
       - name: Install libzmq
         run: |
-          apt -q update
-          apt -qy --no-install-recommends install libzmq3-dev
+          sudo apt -q update
+          sudo apt -qy --no-install-recommends install libzmq3-dev
 
       - name: Setup Rust
         run: |
