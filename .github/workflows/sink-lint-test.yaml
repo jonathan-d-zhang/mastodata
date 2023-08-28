@@ -1,19 +1,17 @@
 name: Sink Lint and Test
 
 on:
-  push:
-    paths:
-      - "**.rs"
-  pull_request:
-    paths:
-      - "**.rs"
+  workflow_run:
+    workflows: ["Pre-commit"]
+    types: [completed]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
-  test:
+  on-success:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ${{ matrix.triple.runs-on }}
     strategy:
       matrix:
@@ -42,3 +40,9 @@ jobs:
 
       - name: Run tests
         run: cargo test --no-fail-fast
+
+  on-failure:
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+    runs-on: ${{ matrix.triple.runs-on }}
+    steps:
+      - run: echo 'Pre-commit failed'

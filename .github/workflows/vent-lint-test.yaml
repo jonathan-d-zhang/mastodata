@@ -1,19 +1,17 @@
 name: Vent Lint and Test
 
 on:
-  push:
-    paths:
-      - "sink/**"
-  pull_request:
-    paths:
-      - "sink/**"
+  workflow_run:
+    workflows: ["Pre-commit"]
+    types: [completed]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
-  vent:
+  on-success:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout repo
@@ -34,3 +32,9 @@ jobs:
         run: |
           cd vent
           pdm test
+
+  on-failure:
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+    runs-on: ubuntu-22.04
+    steps:
+      - run: echo 'Pre-commit failed'
