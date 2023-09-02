@@ -1,3 +1,6 @@
+# Archived
+Moved to a not-monorepo. Link: https://github.com/mastodata.
+
 # Mastodata
 A fun project to learn about message queues using data from Mastodon statuses.
 
